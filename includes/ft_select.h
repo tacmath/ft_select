@@ -20,6 +20,21 @@
 # include <termios.h>
 # include <termcap.h>
 
+# define _UNDERLINED_	"\e[4m"
+# define _REVERSE_	"\e[7m"
+# define _EOFORMAT_	"\e[0m"
+
+# define _BLACK_	"\e[30m"
+# define _RED_		"\e[31m"
+# define _GREEN_	"\e[32m"
+# define _YELLOW_	"\e[33m"
+# define _BLUE_		"\e[34m"
+# define _MAGENTA_	"\e[35m"
+# define _CYAN_		"\e[36m"
+# define _WGITE_	"\e[37m"
+# define _EOC_		"\e[39m"
+
+
 
 struct					s_select
 {
@@ -27,6 +42,7 @@ struct					s_select
 	char *status;
 	int nb_arg;
 	int cursor;
+	int longest_arg;
 	int nb_co;
 	int nb_li;
 };
