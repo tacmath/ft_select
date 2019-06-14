@@ -17,6 +17,8 @@
 # include <unistd.h>
 # include "libft.h"
 # include <stdlib.h>
+# include <signal.h>
+# include <sys/ioctl.h>
 # include <termios.h>
 # include <termcap.h>
 
@@ -40,6 +42,7 @@ struct					s_select
 {
 	char **arg;
 	char *status;
+	struct termios old_term;
 	int nb_arg;
 	int cursor;
 	int longest_arg;
