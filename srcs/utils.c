@@ -1,44 +1,48 @@
 /* ************************************************************************** */
 /*                                                          LE - /            */
 /*                                                              /             */
-/*   main.c                                           .::    .:/ .      .::   */
+/*   utils.c                                          .::    .:/ .      .::   */
 /*                                                 +:+:+   +:    +:  +:+:+    */
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2019/06/17 12:28:19 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/17 12:34:40 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Created: 2019/06/17 12:28:59 by mtaquet      #+#   ##    ##    #+#       */
+/*   Updated: 2019/06/17 12:29:59 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-void main_loop(t_select *map)
+void free_struct(t_select *map)
 {
-	display_all(map);
-	while (1)
-	{		
-		get_controls(map);
-		display_all(map);
-	}
+	int n;
+
+	n = -1;
+	while (map->arg[++n])
+		free(map->arg[n]);
+	free(map->arg);
+	free(map->status);
+	free(map);
 }
 
-int main(int ac, char **av)
+void clean_exit(t_select *map)
 {
-	t_select *map;
-	struct termios old_term;
+	tputs(tgetstr("te", 0), 1, oputchar);
+	tcsetattr(0, TCSANOW, &map->old_term);
+	free_struct(map);
+	exit(0);
+}
 
-	get_signal();
-	if (ac == 1)
-	{
-		ft_putendl_fd("usage: ./ft_select arg1 arg2 ...", 2);
-		return (-1);
-	}
-	if (!term_init(&old_term))
-		return (-1);
-	if (!init_struct(&map, ac, av, old_term))
-		return (-1);
-	get_map(map);
-	main_loop(map);
-	return (0);
+t_select *get_map(t_select *map)
+{
+	static t_select *tmp = 0;
+
+	if (!tmp)
+		tmp = map;
+	return (tmp);
+}
+
+int oputchar(int c)
+{
+	return (write(2, &c, 1));
 }

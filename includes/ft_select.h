@@ -36,7 +36,15 @@
 # define _WGITE_	"\e[37m"
 # define _EOC_		"\e[39m"
 
-
+#define K_UP 4283163
+#define K_DOWN 4348699
+#define K_RIGHT 4414235
+#define K_LEFT 4479771
+#define K_SPACE 32
+#define K_RETURN 10
+#define K_REMOVE 2117294875
+#define K_BACKSPACE 127
+#define K_ESCAPE 27
 
 struct					s_select
 {
@@ -51,5 +59,15 @@ struct					s_select
 };
 
 typedef struct s_select	t_select;
+
+void free_struct(t_select *map);
+void clean_exit(t_select *map);
+t_select *get_map(t_select *map);
+int oputchar(int c);
+int display_all(t_select *map);
+void get_signal(void);
+int init_struct(t_select **map, int ac, char **av, struct termios old);
+int term_init(struct termios *old);
+int get_controls(t_select *map);
 
 #endif

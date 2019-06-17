@@ -6,7 +6,7 @@
 #    By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2018/11/05 12:24:50 by mtaquet      #+#   ##    ##    #+#        #
-#    Updated: 2019/06/06 14:07:00 by mtaquet     ###    #+. /#+    ###.fr      #
+#    Updated: 2019/06/17 12:31:15 by mtaquet     ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -17,13 +17,18 @@ SRCDIR = srcs/
 INCDIR = includes/
 LIBFILES = libft.a
 SRCFILES = main.c\
+		   init.c\
+		   utils.c\
+		   signal.c\
+		   display.c\
+		   event.c\
 
 INCFILES = ft_select.h
 LIB = $(addprefix $(LIBDIR),$(LIBFILES))
 SRC = $(addprefix $(SRCDIR),$(SRCFILES))
 INC = $(addprefix $(INCDIR),$(INCFILES)) libft/includes/libft.h
 OBJ = $(SRC:.c=.o)
-FLAG = -Wall -Werror -Wextra -I includes -I libft/includes -ltermcap
+FLAG = -Wall -Werror -Wextra -I includes -I libft/includes
 
 all: lib $(NAME)
 
@@ -34,7 +39,7 @@ lib: $(LIBDIR)
 	@make -C $(LIBDIR)
 
 $(NAME): $(LIB) $(OBJ) $(INC)
-	gcc -o $@ $(OBJ) $(FLAG) $(LIB)
+	gcc -o $@ $(OBJ) $(FLAG) -ltermcap $(LIB)
 
 clean:
 	rm -f $(OBJ)
