@@ -42,14 +42,12 @@ void display_one_arg(t_select *map, int nb)
 int display_all(t_select *map)
 {
 	int n;
-	int m;
 	int ret;
 
 	tputs(tgetstr("cl", 0), 1, oputchar);
 	tputs(tgetstr("vi", 0), 1, oputchar);
 	write(0, "ft_select :", 11);
 	n = -1;
-	m = 0;
 	ret = 0;
 	while (map->arg[++n])
 	{

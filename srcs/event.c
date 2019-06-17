@@ -110,44 +110,48 @@ void select_arg(t_select *map)
 		map->cursor -= map->nb_arg;
 }
 
-int search_arg(t_select *map, char *new)
+int cmp_all(t_select *map, char *line)
 {
-	static char *line = 0;
-	char	*tmp;
+
 	int		ret;
 	int		nb;
 	int		n;
 
+	ret = 0;
+	nb = 0;
+	n = -1;
+	while (++n < map->nb_arg)
+		if (ft_strstr(map->arg[n], line))
+		{
+			ret++;
+			nb = n;
+		}
+	if (!ret && (n = -1))
+		while (line[++n])
+			line[n] = line[n + 1];
+	else if (ret == 1)
+	{
+		map->cursor = nb;
+		return (1);
+	}
+	else
+		return (1);
+	return (0);
+}
+
+int search_arg(t_select *map, char *new)
+{
+	static char *line = 0;
+	char	*tmp;
+
 	if ((!line && !(line = ft_memalloc(1)))
-		|| !(tmp = ft_strjoin(line, new)))
+			|| !(tmp = ft_strjoin(line, new)))
 		return (0);
 	free(line);
 	line = tmp;
 	while (line[0])
-	{
-		ret = 0;
-		nb = 0;
-		n = -1;
-		while (++n < map->nb_arg)
-			if (!ft_strncmp(line, map->arg[n], ft_strlen(line)))
-			{
-				ret++;
-				nb = n;
-			}
-		if (!ret)
-		{
-			n = -1;
-			while (line[++n])
-				line[n] = line[n + 1];
-		}
-		else if (ret == 1)
-		{
-			map->cursor = nb;
+		if (cmp_all(map, line))
 			return (1);
-		}
-		else
-			return (1);
-	}
 	return (1);
 }
 
