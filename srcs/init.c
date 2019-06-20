@@ -6,7 +6,7 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:27:09 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/17 12:28:10 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/06/20 16:25:55 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -34,6 +34,10 @@ int init_struct(t_select **map, int ac, char **av, struct termios old)
 	(*map)->nb_arg = ac - 1;
 	(*map)->nb_co = tgetnum("co");
 	(*map)->nb_li = tgetnum("li");
+	if ((*map)->longest_arg + 1 < (*map)->nb_co - 1)
+		(*map)->apl = ((*map)->nb_co - 1) / ((*map)->longest_arg + 1);
+	if ((*map)->apl > (*map)->nb_arg)
+		(*map)->apl = (*map)->nb_arg;
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:28:29 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/17 12:34:12 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/06/20 16:26:52 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -23,6 +23,12 @@ void change_win(int sig)
 	ioctl(0, TIOCGWINSZ, &size);
 	map->nb_co = size.ws_col;
 	map->nb_li = size.ws_row;
+	if (map->longest_arg + 1 < map->nb_co - 1)
+		map->apl = (map->nb_co - 1) / (map->longest_arg + 1);
+	else
+		map->apl = 0;
+	if (map->apl > map->nb_arg)
+		map->apl = map->nb_arg;
 	display_all(map);
 }
 

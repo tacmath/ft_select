@@ -6,22 +6,12 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:28:19 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/17 12:34:40 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/06/20 14:58:42 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_select.h"
-
-void main_loop(t_select *map)
-{
-	display_all(map);
-	while (1)
-	{		
-		get_controls(map);
-		display_all(map);
-	}
-}
 
 int main(int ac, char **av)
 {
@@ -39,6 +29,8 @@ int main(int ac, char **av)
 	if (!init_struct(&map, ac, av, old_term))
 		return (-1);
 	get_map(map);
-	main_loop(map);
+	display_all(map);
+	while (1)
+		get_controls(map);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/11 11:01:59 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/11 12:46:00 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/06/20 17:08:18 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -54,6 +54,7 @@ struct					s_select
 	int nb_arg;
 	int cursor;
 	int longest_arg;
+	int apl;
 	int nb_co;
 	int nb_li;
 };
@@ -64,6 +65,8 @@ void free_struct(t_select *map);
 void clean_exit(t_select *map);
 t_select *get_map(t_select *map);
 int oputchar(int c);
+void move_cursor(t_select *map, int nb);
+void display_one_arg(t_select *map, int nb);
 int display_all(t_select *map);
 void get_signal(void);
 int init_struct(t_select **map, int ac, char **av, struct termios old);

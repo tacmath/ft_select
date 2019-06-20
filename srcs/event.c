@@ -6,12 +6,29 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:26:29 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/17 15:22:50 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/06/20 17:14:02 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_select.h"
+
+void get_new_longest_arg(t_select *map)
+{
+	int n;
+	
+	map->longest_arg = 0;
+	n = -1;
+	while (++n < map->nb_arg)
+		if ((int)ft_strlen(map->arg[n]) >= map->longest_arg)
+			map->longest_arg = ft_strlen(map->arg[n]) + 1;
+	if (map->longest_arg + 1 < map->nb_co - 1)
+		map->apl = (map->nb_co - 1) / (map->longest_arg + 1);
+	else
+		map->apl = 0;
+	if (map->apl > map->nb_arg)
+		map->apl = map->nb_arg;
+}
 
 void remove_arg(t_select *map)
 {
@@ -30,6 +47,8 @@ void remove_arg(t_select *map)
 		clean_exit(map);
 	if (map->nb_arg == map->cursor)
 		map->cursor--;
+	get_new_longest_arg(map);
+	display_all(map);
 }
 
 void return_choice(t_select *map)
@@ -51,56 +70,83 @@ void return_choice(t_select *map)
 
 void ft_right(t_select *map)
 {
-	int apl;
+	int mem;
 
-	apl = map->nb_co / (map->longest_arg + 1);
-	if (apl > map->nb_arg)
-		apl = map->nb_arg;
-	if ((map->cursor + 1) % apl)
+	if (!map->apl)
+		return ;
+	mem = map->cursor;
+	if ((map->cursor + 1) % map->apl)
 		map->cursor++;
 	else
-		map->cursor -= --apl;
+		map->cursor -= map->apl - 1;
+	tputs(tgetstr("vi", 0), 1, oputchar);
+	display_one_arg(map, mem);
+	display_one_arg(map, map->cursor);
+	move_cursor(map, map->cursor);
+	tputs(tgetstr("ve", 0), 1, oputchar);
 }
 
 void ft_left(t_select *map)
 {
-	int apl;
+	int mem;
 
-	apl = map->nb_co / (map->longest_arg + 1);
-	if (apl > map->nb_arg)
-		apl = map->nb_arg;
-	if (map->cursor % apl)
+	if (!map->apl)
+		return ;
+	mem = map->cursor;
+	if (map->cursor % map->apl)
 		map->cursor--;
 	else
-		map->cursor += --apl;
+		map->cursor += map->apl - 1;
+	tputs(tgetstr("vi", 0), 1, oputchar);
+	display_one_arg(map, mem);
+	display_one_arg(map, map->cursor);
+	move_cursor(map, map->cursor);
+	tputs(tgetstr("ve", 0), 1, oputchar);
 }
 
 void ft_up(t_select *map)
 {
-	int apl;
+	int mem;
 
-	apl = map->nb_co / (map->longest_arg + 1);
-	if (map->cursor - apl >= 0)
-		map->cursor -= apl;
+	if (!map->apl)
+		return ;
+	mem = map->cursor;
+	if (map->cursor - map->apl >= 0)
+		map->cursor -= map->apl;
 	else
-		map->cursor = map->nb_arg - map->nb_arg % apl + map->cursor % apl;
+		map->cursor = map->nb_arg - map->nb_arg % map->apl + map->cursor % map->apl;
 	if (map->cursor >= map->nb_arg)
-		map->cursor -= apl;
+		map->cursor -= map->apl;
+	tputs(tgetstr("vi", 0), 1, oputchar);
+	display_one_arg(map, mem);
+	display_one_arg(map, map->cursor);
+	move_cursor(map, map->cursor);
+	tputs(tgetstr("ve", 0), 1, oputchar);
 }
 
 void ft_down(t_select *map)
 {
-	int apl;
+	int mem;
 
-	apl = map->nb_co / (map->longest_arg + 1);
-	if (map->cursor + apl < map->nb_arg)
-		map->cursor += apl;
+	if (!map->apl)
+		return ;
+	mem = map->cursor;
+	if (map->cursor + map->apl < map->nb_arg)
+		map->cursor += map->apl;
 	else
-		map->cursor = map->cursor % apl;
+		map->cursor = map->cursor % map->apl;
+	tputs(tgetstr("vi", 0), 1, oputchar);
+	display_one_arg(map, mem);
+	display_one_arg(map, map->cursor);
+	move_cursor(map, map->cursor);
+	tputs(tgetstr("ve", 0), 1, oputchar);
 }
 
 void select_arg(t_select *map)
 {
+	int mem;
+
+	mem = map->cursor;
 	if (map->status[map->cursor])
 		map->status[map->cursor] = 0;
 	else
@@ -108,6 +154,11 @@ void select_arg(t_select *map)
 	map->cursor++;
 	if (map->cursor >= map->nb_arg)
 		map->cursor -= map->nb_arg;
+	tputs(tgetstr("vi", 0), 1, oputchar);
+	display_one_arg(map, mem);
+	display_one_arg(map, map->cursor);
+	move_cursor(map, map->cursor);
+	tputs(tgetstr("ve", 0), 1, oputchar);
 }
 
 int cmp_all(t_select *map, char *line)
@@ -131,7 +182,12 @@ int cmp_all(t_select *map, char *line)
 			line[n] = line[n + 1];
 	else if (ret == 1)
 	{
+		tputs(tgetstr("vi", 0), 1, oputchar);
+		display_one_arg(map, map->cursor);
 		map->cursor = nb;
+		display_one_arg(map, map->cursor);
+		move_cursor(map, map->cursor);
+		tputs(tgetstr("ve", 0), 1, oputchar);
 		return (1);
 	}
 	else
