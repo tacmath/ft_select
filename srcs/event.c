@@ -6,7 +6,7 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:26:29 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/20 17:14:02 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/06/21 12:34:58 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -182,9 +182,10 @@ int cmp_all(t_select *map, char *line)
 			line[n] = line[n + 1];
 	else if (ret == 1)
 	{
+		n = map->cursor;
 		tputs(tgetstr("vi", 0), 1, oputchar);
-		display_one_arg(map, map->cursor);
 		map->cursor = nb;
+		display_one_arg(map, n);
 		display_one_arg(map, map->cursor);
 		move_cursor(map, map->cursor);
 		tputs(tgetstr("ve", 0), 1, oputchar);

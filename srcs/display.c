@@ -6,7 +6,7 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:25:38 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/20 17:01:48 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/06/21 12:38:12 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -92,9 +92,9 @@ int display_all(t_select *map)
 	tputs(tgetstr("cl", 0), 1, oputchar);
 	tputs(tgetstr("vi", 0), 1, oputchar);
 	draw_start(map);
-	if (map->apl == 0)
+	if (map->apl == 0 || map->nb_li < 5)
 	{
-		tputs(tgoto(tgetstr("cm", 0), 1, 1), 1, oputchar);
+		tputs(tgoto(tgetstr("cm", 0), (map->nb_li / 2), 1), 1, oputchar);
 		write(2, "Just Too Small", 15);
 		return (1);
 	}
