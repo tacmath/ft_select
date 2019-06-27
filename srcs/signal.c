@@ -29,6 +29,8 @@ void change_win(int sig)
 		map->apl = 0;
 	if (map->apl > map->nb_arg)
 		map->apl = map->nb_arg;
+	map->start = 0;
+	center_arg(map, map->cursor);
 	display_all(map);
 }
 

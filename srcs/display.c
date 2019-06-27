@@ -38,7 +38,7 @@ void move_cursor(t_select *map, int nb)
 	int nb_line;
 	int nb_co;
 
-	nb_line = nb / map->apl + 3;
+	nb_line = nb / map->apl + 3 - map->start;
 	nb_co = (nb % map->apl) * (map->longest_arg + 1) + 1;
 	tputs(tgoto(tgetstr("cm", 0), nb_co, nb_line), 1, oputchar);
 }
@@ -47,7 +47,7 @@ void display_one_arg(t_select *map, int nb)
 {
 	int len;
 
-	if ((nb / map->apl + 2) > (map->nb_li - 3))
+	if ((nb / map->apl + 2 - map->start) > (map->nb_li - 3) || nb / map->apl < map->start)
 		return ;
 	len = ft_strlen(map->arg[nb]);
 	move_cursor(map, nb);

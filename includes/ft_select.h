@@ -53,6 +53,7 @@ struct					s_select
 	struct termios old_term;
 	int nb_arg;
 	int cursor;
+	int start;
 	int longest_arg;
 	int apl;
 	int nb_co;
@@ -69,6 +70,7 @@ void move_cursor(t_select *map, int nb);
 void display_one_arg(t_select *map, int nb);
 int display_all(t_select *map);
 void get_signal(void);
+int center_arg(t_select *map, int arg);
 int init_struct(t_select **map, int ac, char **av, struct termios old);
 int term_init(struct termios *old);
 int get_controls(t_select *map);

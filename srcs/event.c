@@ -48,6 +48,8 @@ void remove_arg(t_select *map)
 	if (map->nb_arg == map->cursor)
 		map->cursor--;
 	get_new_longest_arg(map);
+	map->start = 0;
+	center_arg(map, map->cursor);
 	display_all(map);
 }
 
@@ -75,10 +77,10 @@ void ft_right(t_select *map)
 	if (!map->apl)
 		return ;
 	mem = map->cursor;
-	if ((map->cursor + 1) % map->apl)
+	if ((map->cursor + 1) % map->apl && (map->cursor + 1) != map->nb_arg)
 		map->cursor++;
 	else
-		map->cursor -= map->apl - 1;
+		map->cursor = (map->cursor / map->apl) * map->apl;
 	tputs(tgetstr("vi", 0), 1, oputchar);
 	display_one_arg(map, mem);
 	display_one_arg(map, map->cursor);
@@ -117,6 +119,20 @@ void ft_up(t_select *map)
 		map->cursor = map->nb_arg - map->nb_arg % map->apl + map->cursor % map->apl;
 	if (map->cursor >= map->nb_arg)
 		map->cursor -= map->apl;
+	if (mem / map->apl == map->start && map->start)
+	{
+		map->start--;
+		display_all(map);
+		return ;
+	}
+	if (mem / map->apl == map->start && map->nb_arg / map->apl > map->nb_li - 5)
+	{
+		map->start = map->nb_arg / map->apl - (map->nb_li - 4);
+		if (map->start < 0)
+			map->start = 0;
+		display_all(map);
+		return ;	
+	}
 	tputs(tgetstr("vi", 0), 1, oputchar);
 	display_one_arg(map, mem);
 	display_one_arg(map, map->cursor);
@@ -135,6 +151,18 @@ void ft_down(t_select *map)
 		map->cursor += map->apl;
 	else
 		map->cursor = map->cursor % map->apl;
+	if (mem / map->apl - map->start == map->nb_li - 5 && map->nb_arg / map->apl - map->start > map->nb_li - 4)
+	{
+		map->start++;
+		display_all(map);
+		return ;
+	}
+	if (map->cursor / map->apl == 0 && map->nb_arg / map->apl > map->nb_li - 5)
+	{
+		map->start = 0;
+		display_all(map);
+		return ;	
+	}
 	tputs(tgetstr("vi", 0), 1, oputchar);
 	display_one_arg(map, mem);
 	display_one_arg(map, map->cursor);
@@ -183,8 +211,13 @@ int cmp_all(t_select *map, char *line)
 	else if (ret == 1)
 	{
 		n = map->cursor;
-		tputs(tgetstr("vi", 0), 1, oputchar);
 		map->cursor = nb;
+		if (center_arg(map, map->cursor))
+		{
+			display_all(map);
+			return (1);
+		}
+		tputs(tgetstr("vi", 0), 1, oputchar);
 		display_one_arg(map, n);
 		display_one_arg(map, map->cursor);
 		move_cursor(map, map->cursor);
