@@ -98,7 +98,11 @@ void ft_left(t_select *map)
 	if (map->cursor % map->apl)
 		map->cursor--;
 	else
+	{
 		map->cursor += map->apl - 1;
+		if (map->cursor > map->nb_arg - 1)
+			map->cursor = map->nb_arg - 1;
+	}
 	tputs(tgetstr("vi", 0), 1, oputchar);
 	display_one_arg(map, mem);
 	display_one_arg(map, map->cursor);
@@ -125,9 +129,9 @@ void ft_up(t_select *map)
 		display_all(map);
 		return ;
 	}
-	if (mem / map->apl == map->start && map->nb_arg / map->apl > map->nb_li - 5)
+	if (mem / map->apl == map->start && (map->nb_arg - 1) / map->apl >= map->nb_li - 4)
 	{
-		map->start = map->nb_arg / map->apl - (map->nb_li - 4);
+		map->start = (map->nb_arg - 1) / map->apl - (map->nb_li - 5);
 		if (map->start < 0)
 			map->start = 0;
 		display_all(map);
@@ -151,13 +155,13 @@ void ft_down(t_select *map)
 		map->cursor += map->apl;
 	else
 		map->cursor = map->cursor % map->apl;
-	if (mem / map->apl - map->start == map->nb_li - 5 && map->nb_arg / map->apl - map->start > map->nb_li - 4)
+	if (mem / map->apl + 1 - map->start == map->nb_li - 4 && (map->nb_arg - 1) / map->apl - map->start >= map->nb_li - 4)
 	{
 		map->start++;
 		display_all(map);
 		return ;
 	}
-	if (map->cursor / map->apl == 0 && map->nb_arg / map->apl > map->nb_li - 5)
+	if (map->cursor / map->apl == 0 && (map->nb_arg - 1) / map->apl >= map->nb_li - 4)
 	{
 		map->start = 0;
 		display_all(map);

@@ -49,12 +49,14 @@ int oputchar(int c)
 
 int center_arg(t_select *map, int arg)
 {
+	if (!map->apl)
+		return (1);
 	if (arg / map->apl - map->start < map->nb_li - 4 && arg / map->apl >= map->start)
 		return (0);
 	if (arg / map->apl < map->nb_li - 4)
 		map->start = 0;
-	else if (arg / map->apl > map->nb_arg / map->apl - (map->nb_li - 4))
-		map->start = map->nb_arg / map->apl - (map->nb_li - 4);
+	else if (arg / map->apl >= (map->nb_arg - 1) / map->apl - (map->nb_li - 4))
+		map->start = (map->nb_arg - 1) / map->apl - (map->nb_li - 5);
 	else
 		map->start = arg / map->apl - ((map->nb_li - 4) / 2);
 	return (1);
