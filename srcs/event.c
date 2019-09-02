@@ -6,31 +6,14 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:26:29 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/21 12:34:58 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/02 15:04:14 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-void get_new_longest_arg(t_select *map)
-{
-	int n;
-	
-	map->longest_arg = 0;
-	n = -1;
-	while (++n < map->nb_arg)
-		if ((int)ft_strlen(map->arg[n]) >= map->longest_arg)
-			map->longest_arg = ft_strlen(map->arg[n]) + 1;
-	if (map->longest_arg + 1 < map->nb_co - 1)
-		map->apl = (map->nb_co - 1) / (map->longest_arg + 1);
-	else
-		map->apl = 0;
-	if (map->apl > map->nb_arg)
-		map->apl = map->nb_arg;
-}
-
-void remove_arg(t_select *map)
+static void	remove_arg(t_select *map)
 {
 	int n;
 
@@ -53,7 +36,7 @@ void remove_arg(t_select *map)
 	display_all(map);
 }
 
-void return_choice(t_select *map)
+static void	return_choice(t_select *map)
 {
 	int n;
 
@@ -70,111 +53,7 @@ void return_choice(t_select *map)
 	exit(0);
 }
 
-void ft_right(t_select *map)
-{
-	int mem;
-
-	if (!map->apl)
-		return ;
-	mem = map->cursor;
-	if ((map->cursor + 1) % map->apl && (map->cursor + 1) != map->nb_arg)
-		map->cursor++;
-	else
-		map->cursor = (map->cursor / map->apl) * map->apl;
-	tputs(tgetstr("vi", 0), 1, oputchar);
-	display_one_arg(map, mem);
-	display_one_arg(map, map->cursor);
-	move_cursor(map, map->cursor);
-	tputs(tgetstr("ve", 0), 1, oputchar);
-}
-
-void ft_left(t_select *map)
-{
-	int mem;
-
-	if (!map->apl)
-		return ;
-	mem = map->cursor;
-	if (map->cursor % map->apl)
-		map->cursor--;
-	else
-	{
-		map->cursor += map->apl - 1;
-		if (map->cursor > map->nb_arg - 1)
-			map->cursor = map->nb_arg - 1;
-	}
-	tputs(tgetstr("vi", 0), 1, oputchar);
-	display_one_arg(map, mem);
-	display_one_arg(map, map->cursor);
-	move_cursor(map, map->cursor);
-	tputs(tgetstr("ve", 0), 1, oputchar);
-}
-
-void ft_up(t_select *map)
-{
-	int mem;
-
-	if (!map->apl)
-		return ;
-	mem = map->cursor;
-	if (map->cursor - map->apl >= 0)
-		map->cursor -= map->apl;
-	else
-		map->cursor = map->nb_arg - map->nb_arg % map->apl + map->cursor % map->apl;
-	if (map->cursor >= map->nb_arg)
-		map->cursor -= map->apl;
-	if (mem / map->apl == map->start && map->start)
-	{
-		map->start--;
-		display_all(map);
-		return ;
-	}
-	if (mem / map->apl == map->start && (map->nb_arg - 1) / map->apl >= map->nb_li - 4)
-	{
-		map->start = (map->nb_arg - 1) / map->apl - (map->nb_li - 5);
-		if (map->start < 0)
-			map->start = 0;
-		display_all(map);
-		return ;	
-	}
-	tputs(tgetstr("vi", 0), 1, oputchar);
-	display_one_arg(map, mem);
-	display_one_arg(map, map->cursor);
-	move_cursor(map, map->cursor);
-	tputs(tgetstr("ve", 0), 1, oputchar);
-}
-
-void ft_down(t_select *map)
-{
-	int mem;
-
-	if (!map->apl)
-		return ;
-	mem = map->cursor;
-	if (map->cursor + map->apl < map->nb_arg)
-		map->cursor += map->apl;
-	else
-		map->cursor = map->cursor % map->apl;
-	if (mem / map->apl + 1 - map->start == map->nb_li - 4 && (map->nb_arg - 1) / map->apl - map->start >= map->nb_li - 4)
-	{
-		map->start++;
-		display_all(map);
-		return ;
-	}
-	if (map->cursor / map->apl == 0 && (map->nb_arg - 1) / map->apl >= map->nb_li - 4)
-	{
-		map->start = 0;
-		display_all(map);
-		return ;	
-	}
-	tputs(tgetstr("vi", 0), 1, oputchar);
-	display_one_arg(map, mem);
-	display_one_arg(map, map->cursor);
-	move_cursor(map, map->cursor);
-	tputs(tgetstr("ve", 0), 1, oputchar);
-}
-
-void select_arg(t_select *map)
+static void	select_arg(t_select *map)
 {
 	int mem;
 
@@ -186,72 +65,12 @@ void select_arg(t_select *map)
 	map->cursor++;
 	if (map->cursor >= map->nb_arg)
 		map->cursor -= map->nb_arg;
-	tputs(tgetstr("vi", 0), 1, oputchar);
-	display_one_arg(map, mem);
-	display_one_arg(map, map->cursor);
-	move_cursor(map, map->cursor);
-	tputs(tgetstr("ve", 0), 1, oputchar);
+	move_select(map, mem);
 }
 
-int cmp_all(t_select *map, char *line)
+int			get_controls(t_select *map)
 {
-
-	int		ret;
-	int		nb;
-	int		n;
-
-	ret = 0;
-	nb = 0;
-	n = -1;
-	while (++n < map->nb_arg)
-		if (ft_strstr(map->arg[n], line))
-		{
-			ret++;
-			nb = n;
-		}
-	if (!ret && (n = -1))
-		while (line[++n])
-			line[n] = line[n + 1];
-	else if (ret == 1)
-	{
-		n = map->cursor;
-		map->cursor = nb;
-		if (center_arg(map, map->cursor))
-		{
-			display_all(map);
-			return (1);
-		}
-		tputs(tgetstr("vi", 0), 1, oputchar);
-		display_one_arg(map, n);
-		display_one_arg(map, map->cursor);
-		move_cursor(map, map->cursor);
-		tputs(tgetstr("ve", 0), 1, oputchar);
-		return (1);
-	}
-	else
-		return (1);
-	return (0);
-}
-
-int search_arg(t_select *map, char *new)
-{
-	static char *line = 0;
-	char	*tmp;
-
-	if ((!line && !(line = ft_memalloc(1)))
-			|| !(tmp = ft_strjoin(line, new)))
-		return (0);
-	free(line);
-	line = tmp;
-	while (line[0])
-		if (cmp_all(map, line))
-			return (1);
-	return (1);
-}
-
-int get_controls(t_select *map)
-{
-	long int    buf;
+	long int	buf;
 
 	buf = 0;
 	read(0, &buf, 7);

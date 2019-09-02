@@ -6,17 +6,17 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:28:19 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/20 14:58:42 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/02 14:32:24 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-	t_select *map;
-	struct termios old_term;
+	t_select		*map;
+	struct termios	old_term;
 
 	get_signal();
 	if (ac == 1)

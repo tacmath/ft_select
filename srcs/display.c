@@ -6,7 +6,7 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:25:38 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/21 12:38:12 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/02 15:36:03 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -15,7 +15,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-void get_color(char *arg)
+static void	get_color(char *arg)
 {
 	struct stat buf;
 
@@ -33,7 +33,7 @@ void get_color(char *arg)
 		ft_putstr_fd(_BLUE_, 2);
 }
 
-void move_cursor(t_select *map, int nb)
+void		move_cursor(t_select *map, int nb)
 {
 	int nb_line;
 	int nb_co;
@@ -43,11 +43,12 @@ void move_cursor(t_select *map, int nb)
 	tputs(tgoto(tgetstr("cm", 0), nb_co, nb_line), 1, oputchar);
 }
 
-void display_one_arg(t_select *map, int nb)
+void		display_one_arg(t_select *map, int nb)
 {
 	int len;
 
-	if ((nb / map->apl + 2 - map->start) > (map->nb_li - 3) || nb / map->apl < map->start)
+	if ((nb / map->apl + 2 - map->start) > (map->nb_li - 3)
+		|| nb / map->apl < map->start)
 		return ;
 	len = ft_strlen(map->arg[nb]);
 	move_cursor(map, nb);
@@ -57,14 +58,15 @@ void display_one_arg(t_select *map, int nb)
 	if (nb == map->cursor)
 		ft_putstr_fd(_UNDERLINED_, 2);
 	write(2, map->arg[nb], len--);
-	ft_putstr_fd(_EOFORMAT_ _EOC_, 2);
+	ft_putstr_fd(_EOFORMAT_, 2);
+	ft_putstr_fd(_EOC_, 2);
 }
 
-void draw_start(t_select *map)
+static void	draw_start(t_select *map)
 {
-	char tmp[map->nb_co];
-	int n;
-	
+	char	tmp[map->nb_co];
+	int		n;
+
 	n = -1;
 	while (++n < map->nb_co)
 		tmp[n] = '-';
@@ -85,7 +87,7 @@ void draw_start(t_select *map)
 	write(2, tmp, map->nb_co);
 }
 
-int display_all(t_select *map)
+int			display_all(t_select *map)
 {
 	int n;
 
@@ -100,9 +102,11 @@ int display_all(t_select *map)
 	}
 	ft_putstr_fd(_UNDERLINED_, 2);
 	ft_putstr_fd(_RED_, 2);
-	tputs(tgoto(tgetstr("cm", 0), (map->nb_co - ft_strlen("ft_select :")) / 2, 1), 1, oputchar);
+	tputs(tgoto(tgetstr("cm", 0), (map->nb_co
+		- ft_strlen("ft_select :")) / 2, 1), 1, oputchar);
 	write(2, "ft_select :", 11);
-	ft_putstr_fd(_EOFORMAT_ _EOC_, 2);
+	ft_putstr_fd(_EOFORMAT_, 2);
+	ft_putstr_fd(_EOC_, 2);
 	n = -1;
 	while (map->arg[++n])
 		display_one_arg(map, n);

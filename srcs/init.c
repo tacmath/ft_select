@@ -6,14 +6,14 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:27:09 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/20 16:25:55 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/02 14:35:38 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-int init_struct(t_select **map, int ac, char **av, struct termios old)
+int	init_struct(t_select **map, int ac, char **av, struct termios old)
 {
 	int n;
 
@@ -41,7 +41,7 @@ int init_struct(t_select **map, int ac, char **av, struct termios old)
 	return (1);
 }
 
-int term_init(struct termios *old)
+int	term_init(struct termios *old)
 {
 	struct termios config;
 

@@ -6,17 +6,17 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:28:29 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/06/20 16:26:52 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/02 14:33:40 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-void change_win(int sig)
+static void	change_win(int sig)
 {
-	t_select *map;
-	struct winsize size;
+	t_select		*map;
+	struct winsize	size;
 
 	(void)sig;
 	map = get_map(0);
@@ -34,16 +34,16 @@ void change_win(int sig)
 	display_all(map);
 }
 
-void sig_quit(int sig)
+static void	sig_quit(int sig)
 {
 	(void)sig;
 	clean_exit(get_map(0));
 }
 
-void suspend_term(int sig)
+static void	suspend_term(int sig)
 {
-	t_select *map;
-	char	tmp[2];
+	t_select	*map;
+	char		tmp[2];
 
 	(void)sig;
 	map = get_map(0);
@@ -55,7 +55,7 @@ void suspend_term(int sig)
 	ioctl(0, TIOCSTI, tmp);
 }
 
-void restart_term(int sig)
+static void	restart_term(int sig)
 {
 	struct termios config;
 
@@ -69,7 +69,7 @@ void restart_term(int sig)
 	display_all(get_map(0));
 }
 
-void get_signal(void)
+void		get_signal(void)
 {
 	signal(SIGWINCH, change_win);
 	signal(SIGINT, sig_quit);
