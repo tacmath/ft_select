@@ -6,7 +6,7 @@
 /*   By: mtaquet <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/06/17 12:26:29 by mtaquet      #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/02 15:04:14 by mtaquet     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/03 14:27:26 by mtaquet     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -65,6 +65,20 @@ static void	select_arg(t_select *map)
 	map->cursor++;
 	if (map->cursor >= map->nb_arg)
 		map->cursor -= map->nb_arg;
+	if (map->cursor / map->apl == 0 && (map->nb_arg - 1)
+			/ map->apl >= map->nb_li - 4)
+	{
+		map->start = 0;
+		display_all(map);
+		return ;
+	}
+	if (map->cursor / map->apl - map->start == map->nb_li - 4
+			&& (map->nb_arg - 1) / map->apl - map->start >= map->nb_li - 4)
+	{
+		map->start++;
+		display_all(map);
+		return ;
+	}
 	move_select(map, mem);
 }
 
